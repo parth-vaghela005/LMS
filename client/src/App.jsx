@@ -1,25 +1,9 @@
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import Create from "./pages/Create"
 
+import Login from "./pages/Login"
 export default function App() {
   return (
     <>
+    <Login/>
     < Create />
     </>
     // <Tabs defaultValue="account" className="w-[400px]">
