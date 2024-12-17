@@ -16,7 +16,7 @@ const Create = () => {
       </div>
       <div className='flex justify-center items-center'>
       <Button className='mt-5 text-start'>
-        Create +
+        Create
       </Button>
       </div>
       
