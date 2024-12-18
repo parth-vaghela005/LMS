@@ -9,25 +9,25 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    // password:{
-    //     type:String,
-    //     required:true
-    // },
-    // role:{
-    //     type:String,
-    //     enum:["instructor", "student"],
-    //     default:'student'
-    // },
-    // enrolledCourses:[
-    //     {
-    //         type:mongoose.Schema.Types.ObjectId,
-    //         ref:'Course'
-    //     }
-    // ],
-    // photoUrl:{
-    //     type:String,
-    //     default:""
-    // }
+    password:{
+        type:String,
+        required:true
+    },
+    role:{
+        type:String,
+        enum:["instructor", "student"],
+        default:'student'
+    },
+    enrolledCourses:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Course'
+        }
+    ],
+    photoUrl:{
+        type:String,
+        default:""
+    }
 },{timestamps:true});
 
 const User = mongoose.model("User", userSchema);

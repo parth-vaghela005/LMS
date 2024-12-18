@@ -1,10 +1,9 @@
-import User from "../models/user.model.js";
-import bcrypt from "bcryptjs";
-import generateToken  from "../utils/generateToken.js";
+const  User  = require("../models/user.model.js")
+const  bcrypt =  require("bcryptjs") 
+const  generateToken   = require("../utils/generateToken.js")
 const register = async (req,res) => {
     try {
-       
-        const {name, email, password} = req.body; // patel214
+        const {name, email, password} = req.body;
         if(!name || !email || !password){
             return res.status(400).json({
                 success:false,
@@ -19,14 +18,16 @@ const register = async (req,res) => {
             })
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        await User.create({
+       const userData  =  await User.create({
             name,
             email,
             password:hashedPassword
         });
+        await userData.save();
         return res.status(201).json({
             success:true,
-            message:"Account created successfully."
+            message:"Account created successfully.",
+            user:userData
         })
     } catch (error) {
         console.log(error);
@@ -37,7 +38,7 @@ const register = async (req,res) => {
     }
 }
 
-login = async (req,res) => {
+const login = async (req,res) => {
     try {
         const {email, password} = req.body;
         if(!email || !password){
@@ -50,14 +51,14 @@ login = async (req,res) => {
         if(!user){
             return res.status(400).json({
                 success:false,
-                message:"Incorrect email or password"
+                message:"Incorrect email "
             })
         }
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if(!isPasswordMatch){
             return res.status(400).json({
                 success:false,
-                message:"Incorrect email or password"
+                message:"Incorrect  password"
             });
         }
         generateToken(res, user, `Welcome back ${user.name}`);
