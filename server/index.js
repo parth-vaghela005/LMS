@@ -4,11 +4,16 @@ const dotenv = require('dotenv');
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose')
 const User = require('../server/models/user.model.js');
+const cors = require('cors')
 const authrouter  = require('../server/routes/Authroute.js')
 dotenv.config()
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cors({
+  origin:"http://localhost:5173",
+  credentials:true
+}));
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('MongoDB connection error:', error));
