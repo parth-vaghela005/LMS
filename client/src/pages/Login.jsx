@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { LOGIN_LBL, REGiSTRATION_LBL, PLACEHOLDER } from '../pages/comm.js';
 import {
   Card,
   CardContent,
@@ -17,6 +19,7 @@ import { useLoginUserMutation, useRegisterUserMutation } from "@/slices/api/Auth
 import { Loader2 } from "lucide-react";
 
 const Login = () => {
+const navigate  = useNavigate()
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [signupInput, setsignupInput] = useState({ name: "", email: "", password: "" });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
@@ -66,6 +69,7 @@ const Login = () => {
     }
     if (loginIsSuccess && loginData) {
       toast.success(loginData.message || "Login successful.");
+      navigate("/")
 
     }
     if (loginError) {
@@ -90,35 +94,35 @@ const Login = () => {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="space-y-1">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">{REGiSTRATION_LBL.name}</Label>
                 <Input
                   type="text"
                   name="name"
                   value={signupInput.name}
                   onChange={(e) => InputHandler(e, "signup")}
-                  placeholder="Eg. John Doe"
+                  placeholder={PLACEHOLDER.name}
                   required
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{REGiSTRATION_LBL.email}</Label>
                 <Input
                   type="email"
                   name="email"
                   value={signupInput.email}
                   onChange={(e) => InputHandler(e, "signup")}
-                  placeholder="Email"
-                  required
+                  placeholder={PLACEHOLDER.email}
+                  required="true"
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{REGiSTRATION_LBL.password}</Label>
                 <Input
                   type="password"
                   name="password"
                   value={signupInput.password}
                   onChange={(e) => InputHandler(e, "signup")}
-                  placeholder="Password"
+                  placeholder={PLACEHOLDER.password}
                   required
                 />
               </div>
@@ -142,24 +146,24 @@ const Login = () => {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{LOGIN_LBL.email}</Label>
                 <Input
                   type="email"
                   name="email"
                   value={loginInput.email}
                   onChange={(e) => InputHandler(e, "login")}
-                  placeholder="Email"
+                  placeholder={PLACEHOLDER.email}
                   required
                 />
               </div>
               <div className="space-y-1">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{REGiSTRATION_LBL.password}</Label>
                 <Input
                   type="password"
                   name="password"
                   value={loginInput.password}
                   onChange={(e) => InputHandler(e, "login")}
-                  placeholder="Password"
+                  placeholder={PLACEHOLDER.password}
                   required
                 />
               </div>
