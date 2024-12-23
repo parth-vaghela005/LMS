@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AiOutlinePicture } from "react-icons/ai";
+import { useSelector } from "react-redux";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,9 @@ const Profile = () => {
     const enrolledCourses  = [1,2,3,4]
     const isLoading = false;
     const updateUserIsLoading  = false
+    const { user, isAuthenticated } = useSelector((state) => state.auth);
+    console.log(user,isAuthenticated);
+    
 //   const [name, setName] = useState("");
 //   const [profilePhoto, setProfilePhoto] = useState("");
 
@@ -93,7 +97,9 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
               Name:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-               Parth
+              {
+                user?.name || "parth"
+              }
               </span>
             </h1>
           </div>
@@ -101,7 +107,9 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
             Email
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-              vaghelaparth300@gmail.com
+            {
+              user?.email || "parth@gmail.com"
+            }
               </span>
             </h1>
           </div>
@@ -109,7 +117,11 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
               Role:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-              Student
+            
+            {
+              user?.role || "Student"
+              }
+
               </span>
             </h1>
           </div>
