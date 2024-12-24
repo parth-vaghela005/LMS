@@ -16,69 +16,72 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Course from "./Course";
-// import {
-//   useLoadUserQuery,
-//   useUpdateUserMutation,
-// } from "@/features/api/authApi";
-// import { toast } from "sonner";
+// import { useLoadUserQuery } from "@/slices/api/AuthApi";
+import Loader from "../Loader";
+import {
+  useLoadUserQuery,
+  useUpdateUserMutation,
+} from "@/slices/api/AuthApi.js";
+import { toast } from "sonner";
 
 const Profile = () => {
     const enrolledCourses  = [1,2,3,4]
-    const isLoading = false;
-    const updateUserIsLoading  = false
-    const { user, isAuthenticated } = useSelector((state) => state.auth);
-    console.log(user,isAuthenticated);
+    // const isLoading = false;
+    // const updateUserIsLoading  = false
+    // const { user, isAuthenticated } = useSelector((state) => state.auth);
+    // console.log(user,isAuthenticated);
     
-//   const [name, setName] = useState("");
-//   const [profilePhoto, setProfilePhoto] = useState("");
+  const [name, setName] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState("");
 
-//   const { data, isLoading, refetch } = useLoadUserQuery();
-//   const [
-//     updateUser,
-//     {
-//       data: updateUserData,
-//       isLoading: updateUserIsLoading,
-//       isError,
-//       error,
-//       isSuccess,
-//     },
-//   ] = useUpdateUserMutation();
+  const { data, isLoading, refetch } = useLoadUserQuery();
+  // console.log(data);
+  
+  const [
+    updateUser,
+    {
+      data: updateUserData,
+      isLoading: updateUserIsLoading,
+      isError,
+      error,
+      isSuccess,
+    },
+  ] = useUpdateUserMutation();
 
 //   console.log(data);
 
-//   const onChangeHandler = (e) => {
-//     const file = e.target.files?.[0];
-//     if (file) setProfilePhoto(file);
-//   };
+  const onChangeHandler = (e) => {
+    const file = e.target.files?.[0];
+    if (file) setProfilePhoto(file);
+  };
 
-//   const updateUserHandler = async () => {
-//     const formData = new FormData();
-//     formData.append("name", name);
-//     formData.append("profilePhoto", profilePhoto);
-//     await updateUser(formData);
-//   };
+  const updateUserHandler = async () => {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("profilePhoto", profilePhoto);
+    await updateUser(formData);
+  };
 
-//   useEffect(() => {
-//     refetch();
-//   }, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
-//   useEffect(() => {
-//     if (isSuccess) {
-//       refetch();
-//       toast.success(data.message || "Profile updated.");
-//     }
-//     if (isError) {
-//       toast.error(error.message || "Failed to update profile");
-//     }
-//   }, [error, updateUserData, isSuccess, isError]);
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      toast.success(data.message || "Profile updated.");
+    }
+    if (isError) {
+      toast.error(error.message || "Failed to update profile");
+    }
+  }, [error, updateUserData, isSuccess, isError]);
 
-  if (isLoading) return <h1>Profile Loading...</h1>;
+  if (isLoading) 
+    return <Loader/>
 
 //   const user = data && data.user;
 
 //   console.log(user);
-  
-
   return (
     <div className="max-w-4xl mx-auto px-4 my-10">
       <h1 className="font-bold text-2xl text-center md:text-left">PROFILE</h1>
@@ -86,7 +89,10 @@ const Profile = () => {
         <div className="flex flex-col items-center">
           <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
             <AvatarImage
-              src= "https://github.com/shadcn.png"
+              src= 
+              {
+                data.user?.photoUrl
+              }
               alt="@shadcn"
             />
             <AvatarFallback>CN</AvatarFallback>
@@ -98,7 +104,7 @@ const Profile = () => {
               Name:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
               {
-                user?.name || "parth"
+                data.user?.name || "parth"
               }
               </span>
             </h1>
@@ -108,7 +114,7 @@ const Profile = () => {
             Email
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
             {
-              user?.email || "parth@gmail.com"
+              data.user?.email || "parth@gmail.com"
             }
               </span>
             </h1>
@@ -119,7 +125,7 @@ const Profile = () => {
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
             
             {
-              user?.role || "Student"
+              data.user?.role || "Student"
               }
 
               </span>
@@ -144,8 +150,8 @@ const Profile = () => {
                   <Label>Name</Label>
                   <Input
                     type="text"
-                    // value={name}
-                    // onChange={(e) => setName(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Name"
                     className="col-span-3"
                   />
@@ -165,15 +171,15 @@ const Profile = () => {
       type="file"
       accept="image/*"
       className="hidden"
-      // onChange={onChangeHandler}
+      onChange={onChangeHandler}
     />
   </div>
 </div>
               </div>
               <DialogFooter>
                 <Button
-                //   disabled={updateUserIsLoading}
-                //   onClick={updateUserHandler}
+                  disabled={updateUserIsLoading}
+                  onClick={updateUserHandler}
                 >
                   {updateUserIsLoading ? (
                     <>
