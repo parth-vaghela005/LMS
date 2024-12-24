@@ -9,10 +9,8 @@ import { Toaster } from './components/ui/sonner'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={appStore}>
-      {/* <BrowserRouter>  */}
         <App />
         <Toaster/>
-      {/* </BrowserRouter> */}
     </Provider>
   </StrictMode>,
 )
