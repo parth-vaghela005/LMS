@@ -1,7 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { AiOutlinePicture } from "react-icons/ai";
-import { useSelector } from "react-redux";
 import {
   Dialog,
   DialogContent,
@@ -15,73 +13,53 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import Course from "./Course";
-// import { useLoadUserQuery } from "@/slices/api/AuthApi";
-import Loader from "../Loader";
-import {
-  useLoadUserQuery,
-  useUpdateUserMutation,
-} from "@/slices/api/AuthApi.js";
+import { useLoadUserQuery, useUpdateUserMutation } from "@/slices/api/AuthApi";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
+import Course from "./Course";
 
 const Profile = () => {
-    const enrolledCourses  = [1,2,3,4]
-    // const isLoading = false;
-    // const updateUserIsLoading  = false
-    // const { user, isAuthenticated } = useSelector((state) => state.auth);
-    // console.log(user,isAuthenticated);
-    
   const [name, setName] = useState("");
-  const [profilePhoto, setProfilePhoto] = useState("");
-
+  const [profilePhoto, setProfilePhoto] = useState(null);
+  const { user } = useSelector((store) => store.auth);
   const { data, isLoading, refetch } = useLoadUserQuery();
-  // console.log(data);
-  
   const [
     updateUser,
-    {
-      data: updateUserData,
-      isLoading: updateUserIsLoading,
-      isError,
-      error,
-      isSuccess,
-    },
+    { isLoading: isUpdating, isError, error, isSuccess },
   ] = useUpdateUserMutation();
 
-//   console.log(data);
-
   const onChangeHandler = (e) => {
-    const file = e.target.files?.[0];
-    if (file) setProfilePhoto(file);
+    const file = e.target.files[0];
+    if (file && file.size <= 5 * 1024 * 1024) {
+      setProfilePhoto(file);
+    } else {
+      toast.error("Please select a file smaller than 5MB.");
+    }
   };
 
   const updateUserHandler = async () => {
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("profilePhoto", profilePhoto);
+    if (profilePhoto) {
+      formData.append("profilePhoto", profilePhoto);
+    }
     await updateUser(formData);
   };
 
   useEffect(() => {
-    refetch();
-  }, []);
-
-  useEffect(() => {
     if (isSuccess) {
       refetch();
-      toast.success(data.message || "Profile updated.");
+      toast.success("Profile updated successfully!");
     }
     if (isError) {
-      toast.error(error.message || "Failed to update profile");
+      toast.error(error.message || "Failed to update profile.");
     }
-  }, [error, updateUserData, isSuccess, isError]);
+  }, [isSuccess, isError, error, refetch]);
 
-  if (isLoading) 
-    return <Loader/>
+  if (isLoading) {
+    return <h1>Loading profile...</h1>;
+  }
 
-//   const user = data && data.user;
-
-//   console.log(user);
   return (
     <div className="max-w-4xl mx-auto px-4 my-10">
       <h1 className="font-bold text-2xl text-center md:text-left">PROFILE</h1>
@@ -89,45 +67,36 @@ const Profile = () => {
         <div className="flex flex-col items-center">
           <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
             <AvatarImage
-              src= 
-              {
-                data.user?.photoUrl
-              }
-              alt="@shadcn"
+              src={user?.photoUrl || "https://github.com/shadcn.png"}
+              alt={user?.name || "User"}
             />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>
+              {user?.name?.charAt(0).toUpperCase() || "U"}
+            </AvatarFallback>
           </Avatar>
         </div>
         <div>
           <div className="mb-2">
-            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100">
               Name:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-              {
-                data.user?.name || "parth"
-              }
+                {user?.name || "N/A"}
               </span>
             </h1>
           </div>
           <div className="mb-2">
-            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
-            Email
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100">
+              Email:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-            {
-              data.user?.email || "parth@gmail.com"
-            }
+                {user?.email || "N/A"}
               </span>
             </h1>
           </div>
           <div className="mb-2">
-            <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
+            <h1 className="font-semibold text-gray-900 dark:text-gray-100">
               Role:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-            
-            {
-              data.user?.role || "Student"
-              }
-
+                {user?.role?.toUpperCase() || "USER"}
               </span>
             </h1>
           </div>
@@ -141,8 +110,7 @@ const Profile = () => {
               <DialogHeader>
                 <DialogTitle>Edit Profile</DialogTitle>
                 <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
+                  Make changes to your profile. Click save when done.
                 </DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
@@ -152,39 +120,29 @@ const Profile = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Name"
+                    placeholder="Enter new name"
                     className="col-span-3"
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-  <Label>Profile Photo</Label>
-  <div className="col-span-3 flex items-center gap-2">
-    <label
-      htmlFor="fileInput"
-      className="cursor-pointer flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-    >
-      <AiOutlinePicture className="text-2xl" />
-      <span>Upload Photo</span>
-    </label>
-    <Input
-      id="fileInput"
-      type="file"
-      accept="image/*"
-      className="hidden"
-      onChange={onChangeHandler}
-    />
-  </div>
-</div>
+                  <Label>Profile Photo</Label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={onChangeHandler}
+                    className="col-span-3"
+                  />
+                </div>
               </div>
               <DialogFooter>
                 <Button
-                  disabled={updateUserIsLoading}
+                  disabled={isUpdating}
                   onClick={updateUserHandler}
                 >
-                  {updateUserIsLoading ? (
+                  {isUpdating ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
-                      wait
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
                     </>
                   ) : (
                     "Save Changes"
@@ -198,17 +156,14 @@ const Profile = () => {
       <div>
         <h1 className="font-medium text-lg">Courses you're enrolled in</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-          {enrolledCourses.length === 0 ? (
-            <h1>You haven't enrolled yet</h1>
-          ) : (
-           enrolledCourses.map((course) => (
-              <Course course={course} key={course._id} />
+          {
+            [1,2,3,4,5].map((course,index) => (
+              <Course key={index}/>
             ))
-          )}
+          }
         </div>
       </div>
     </div>
   );
 };
-
 export default Profile;

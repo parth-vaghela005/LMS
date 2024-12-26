@@ -1,14 +1,17 @@
-
-import Login from "./pages/Login"
-// import Navbar from './components/ui/Navbar'
-import HeroSection from "./pages/student/HeroSection"
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
-// import Course from "./pages/student/Course";
+import Login from "./pages/Login";
+import HeroSection from "./pages/student/HeroSection";
 import Courses from "./pages/student/Courses";
 import MyLearning from "./pages/student/MyLearning";
 import Profile from "./pages/student/Profile";
-// import <Courses></Courses> from "./pages/student/Courses";
+// import Sidebar from "./pages/admin/Dashboard";
+import Sidebar from './pages/admin/Sidebar'
+import Dashboard from './pages/admin/Dashboard'
+import CourseTable from './pages/admin/course/CourseTable'
+import AddCourse from './pages/admin/course/AddCourse'
+
+
 export default function App() {
   const appRouter = createBrowserRouter([
     {
@@ -30,21 +33,41 @@ export default function App() {
         },
         {
           path: "my-learning",
-          element: <MyLearning />, // Add your MyLearning component here
+          element: <MyLearning />,
         },
         {
           path: "profile",
-          element: <Profile />, // Add your MyLearning component here
+          element: <Profile />,
+        },
+        {
+          path: "admin",
+          element: (
+        
+              <Sidebar />
+           
+          ),
+          children: [
+            {
+              path: "dashboard",
+              element: <Dashboard />,
+            },
+            {
+              path: "course",
+              element: <CourseTable/>,
+            },
+            {
+              path: "course/create",
+              element: <AddCourse />,
+            },
+          ],
         },
       ],
     },
   ]);
-  
-  
-  
+
   return (
     <main>
-    <RouterProvider router={appRouter} />
+      <RouterProvider router={appRouter} />
     </main>
-  )
+  );
 }

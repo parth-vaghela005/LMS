@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { userLoggedIn } from "../AuthSlice.js";
+import { userLoggedIn, userLoggedOut } from "../AuthSlice.js";
 
 // Use environment variables for API URL
 const USER_API = "http://localhost:5000/api/v1/auth/";
@@ -35,6 +35,19 @@ export const authApi = createApi({
                 }
             },
         }),
+        logoutUser: builder.mutation({
+            query: () => ({
+                url:"logout",
+                method:"GET"
+            }),
+            async onQueryStarted(_, {queryFulfilled, dispatch}) {
+                try { 
+                    dispatch(userLoggedOut());
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }),
         loadUser: builder.query({
             query: () => ({
                 url: "profile",
@@ -65,4 +78,5 @@ export const {
     useLoginUserMutation,
     useLoadUserQuery,
     useUpdateUserMutation,
+    useLogoutUserMutation
 } = authApi;
