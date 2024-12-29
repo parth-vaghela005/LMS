@@ -10,65 +10,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { useGetCreatorCourseQuery } from "@/features/api/courseApi";
+import { useGetCreatorCourseQuery } from "@/slices/api/courseApi"; // Adjusted for the correct import
 import { Edit } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
-
 const CourseTable = () => {
-    // const {data, isLoading} = useGetCreatorCourseQuery();
+  const { data, isLoading, isSuccess,refetch } = useGetCreatorCourseQuery();
   const navigate = useNavigate();
-const isLoading = false
-  if(isLoading) return <h1>Loading...</h1>
- 
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+  
+  if (isLoading) return <h1>Loading...</h1>;
+
   return (
     <div>
-      <Button onClick={() => navigate(`create`)}>Create a new course</Button>
+      <Button onClick={() => navigate("create")}>Create a new course</Button>
       <Table>
         <TableCaption>A list of your recent courses.</TableCaption>
         <TableHeader>
@@ -80,13 +38,24 @@ const isLoading = false
           </TableRow>
         </TableHeader>
         <TableBody>
-          {[1,2,3,4,5].map((course,index) => (
+          {data?.courses?.map((course, index) => (
             <TableRow key={index}>
-              <TableCell className="font-medium">{course?.coursePrice || "NA"}</TableCell>
-              <TableCell> <Badge>{course.isPublished ? "Published" : "Draft"}</Badge> </TableCell>
+              <TableCell className="font-medium">
+                {course?.coursePrice || "NA"}
+              </TableCell>
+              <TableCell>
+                <Badge>{course.isPublished ? "Published" : "Draft"}</Badge>
+              </TableCell>
               <TableCell>{course.courseTitle || "MongoDB"}</TableCell>
               <TableCell className="text-right">
-                 <Button size='sm' variant='ghost' onClick={() => navigate(`${course._id}`)}><Edit/>Edit</Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => navigate(`${course._id}`)}
+                >
+                  <Edit />
+                  Edit
+                </Button>
               </TableCell>
             </TableRow>
           ))}

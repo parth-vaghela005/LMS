@@ -3,6 +3,7 @@ import rootReducer from "./rootRedure.js";
 import { authApi } from "@/slices/api/AuthApi";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // Default is localStorage for web
+import { courseApi } from "@/slices/api/courseApi.js";
 
 // Configuration for persisting
 const persistConfig = {
@@ -17,7 +18,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 const appStore = configureStore({
     reducer: persistedReducer,
     middleware: (defaultMiddleware) =>
-        defaultMiddleware({ serializableCheck: false }).concat(authApi.middleware),
+        defaultMiddleware({ serializableCheck: false }).concat(authApi.middleware,courseApi.middleware),
 });
 
 export const persistor = persistStore(appStore);

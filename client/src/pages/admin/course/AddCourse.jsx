@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
 import {
   Select,
   SelectContent,
@@ -10,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCreateCourseMutation } from "@/slices/api/courseApi";
 // import { useCreateCourseMutation } from "@/features/api/courseApi";
 import { Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -19,30 +21,30 @@ import { toast } from "sonner";
 const AddCourse = () => {
   const [courseTitle, setCourseTitle] = useState("");
   const [category, setCategory] = useState("");
-const isSuccess  = false
-//   const [createCourse, { data, isLoading, error, isSuccess }] =
-//     useCreateCourseMutation();
-const isLoading  = false
+  const [createCourse, { data, isLoading, error, isSuccess }] =
+  useCreateCourseMutation(); 
   const navigate = useNavigate();
-
   const getSelectedCategory = (value) => {
     setCategory(value);
   };
-
   const createCourseHandler = async () => {
-    console.log(courseTitle,category);
-    
-    // await createCourse({ courseTitle, category });
+ await  createCourse({
+    courseTitle,
+    category
+  })
+// console.log(courseTitle,category);
+
   };
 
-  // for displaying toast
+
   useEffect(()=>{
     if(isSuccess){
-        toast.success(data?.message || "Course created.");
+        toast.success( "Course created.");
         navigate("/admin/course");
     }
-  },[])
-
+  },[error,isLoading
+    
+  ])
   return (
     <div className="flex-1 mx-10">
       <div className="mb-4">

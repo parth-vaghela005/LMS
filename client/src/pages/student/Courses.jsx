@@ -1,23 +1,19 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Course from "./Course";
-// import { useGetPublishedCourseQuery } from "@/features/api/courseApi";
+import { useGetCreatorCourseQuery } from "@/slices/api/courseApi";
 
 const Courses = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const arr = [1, 2, 3, 4, 5]; // Dummy courses
+  const { data, isLoading, isSuccess, refetch, error } = useGetCreatorCourseQuery();
 
-  // Simulate loading for 3 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    if (!isSuccess) {
+      refetch();
+    }
+  }, [refetch, isSuccess]);
+console.log(data);
 
-    return () => clearTimeout(timer); // Cleanup on unmount
-  }, [isLoading]);
-
-  if (isError) {
+  if (error) {
     return <h1>Some error occurred while fetching courses.</h1>;
   }
 
@@ -31,8 +27,9 @@ const Courses = () => {
               <CourseSkeleton key={index} />
             ))
           ) : (
-            arr.map((course, index) => <Course key={index} course={course} />)
-            // <Course />
+            data?.courses?.map((course, index) => (
+              <Course key={index} course={course} />
+            ))
           )}
         </div>
       </div>
