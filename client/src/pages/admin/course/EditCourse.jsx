@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import CourseTab from "./CourseTab";
+import { useParams } from 'react-router-dom';
+import { useGetCourseByIdQuery } from "@/slices/api/courseApi";
 
 const EditCourse = () => {
+
+  // console.log(courseId);
   return (
     <div className="flex-1">
       <div className="flex items-center justify-between mb-5">

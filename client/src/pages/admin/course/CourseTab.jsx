@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEditCourseMutation, useGetCourseByIdQuery } from "@/slices/api/courseApi";
 // import {
 //   useEditCourseMutation,
 //   useGetCourseByIdQuery,
@@ -42,31 +43,35 @@ const CourseTab = () => {
 
   const params = useParams();
   const courseId = params.courseId;
-  // const { data: courseByIdData, isLoading: courseByIdLoading , refetch} =
-  //   useGetCourseByIdQuery(courseId);
+  const { data: courseByIdData, isLoading: courseByIdLoading , refetch} =
+    useGetCourseByIdQuery(courseId);
 
     // const [publishCourse, {}] = usePublishCourseMutation();
  
-  // useEffect(() => {
-  //   if (courseByIdData?.course) { 
-  //       const course = courseByIdData?.course;
-  //     setInput({
-  //       courseTitle: course.courseTitle,
-  //       subTitle: course.subTitle,
-  //       description: course.description,
-  //       category: course.category,
-  //       courseLevel: course.courseLevel,
-  //       coursePrice: course.coursePrice,
-  //       courseThumbnail: "",
-  //     });
-  //   }
-  // }, [courseByIdData]);
+  useEffect(() => {
+    if (courseByIdData?.course) { 
+        const course = courseByIdData?.course;
+        refetch()
+        console.log(course.category);
+        
+      setInput({
+        courseTitle: course.courseTitle,
+        subTitle: course.subTitle,
+        description: course.description,
+        category: course.category,
+        courseLevel: course.courseLevel,
+        coursePrice: course.coursePrice,
+        courseThumbnail: "",
+      });
+    
+    }
+  }, [courseByIdData]);
 
   const [previewThumbnail, setPreviewThumbnail] = useState("");
   const navigate = useNavigate();
 
-  // const [editCourse, { data, isLoading, isSuccess, error }] =
-  //   useEditCourseMutation();
+    const [editCourse, { data, isLoading, isSuccess, error }] =
+    useEditCourseMutation();
 
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
@@ -91,16 +96,16 @@ const CourseTab = () => {
   };
 
   const updateCourseHandler = async () => {
-    // const formData = new FormData();
-    // formData.append("courseTitle", input.courseTitle);
-    // formData.append("subTitle", input.subTitle);
-    // formData.append("description", input.description);
-    // formData.append("category", input.category);
-    // formData.append("courseLevel", input.courseLevel);
-    // formData.append("coursePrice", input.coursePrice);
-    // formData.append("courseThumbnail", input.courseThumbnail);
+    const formData = new FormData();
+    formData.append("courseTitle", input.courseTitle);
+    formData.append("subTitle", input.subTitle);
+    formData.append("description", input.description);
+    formData.append("category", input.category);
+    formData.append("courseLevel", input.courseLevel);
+    formData.append("coursePrice", input.coursePrice);
+    formData.append("courseThumbnail", input.courseThumbnail);
 
-    // await editCourse({ formData, courseId });
+    await editCourse({ formData, courseId });
     console.log(input);
     
   };
@@ -117,14 +122,14 @@ const CourseTab = () => {
   //   }
   // }
 
-  // useEffect(() => {
-  //   if (isSuccess) {
-  //     toast.success(data.message || "Course update.");
-  //   }
-  //   if (error) {
-  //     toast.error(error.data.message || "Failed to update course");
-  //   }
-  // }, [isSuccess, error]);
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || "Course update.");
+    }
+    if (error) {
+      toast.error(error.data.message || "Failed to update course");
+    }
+  }, [isSuccess, error]);
 
   // if(courseByIdLoading) return <h1>Loading...</h1>
  
@@ -176,40 +181,38 @@ const CourseTab = () => {
           <div className="flex items-center gap-5">
             <div>
               <Label>Category</Label>
-              <Select
-                defaultValue={input.category}
-                onValueChange={selectCategory}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Category</SelectLabel>
-                    <SelectItem value="Next JS">Next JS</SelectItem>
-                    <SelectItem value="Data Science">Data Science</SelectItem>
-                    <SelectItem value="Frontend Development">
-                      Frontend Development
-                    </SelectItem>
-                    <SelectItem value="Fullstack Development">
-                      Fullstack Development
-                    </SelectItem>
-                    <SelectItem value="MERN Stack Development">
-                      MERN Stack Development
-                    </SelectItem>
-                    <SelectItem value="Javascript">Javascript</SelectItem>
-                    <SelectItem value="Python">Python</SelectItem>
-                    <SelectItem value="Docker">Docker</SelectItem>
-                    <SelectItem value="MongoDB">MongoDB</SelectItem>
-                    <SelectItem value="HTML">HTML</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              {
+                console.log(input.category + "parth")
+              }
+             <Select
+  value={input.category}
+  onValueChange={selectCategory}
+>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Select a category" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectLabel>Category</SelectLabel>
+      <SelectItem value="Next JS">Next JS</SelectItem>
+      <SelectItem value="Data Science">Data Science</SelectItem>
+      <SelectItem value="Frontend Development">Frontend Development</SelectItem>
+      <SelectItem value="Fullstack Development">Fullstack Development</SelectItem>
+      <SelectItem value="MERN Stack Development">MERN Stack Development</SelectItem>
+      <SelectItem value="Javascript">Javascript</SelectItem>
+      <SelectItem value="Python">Python</SelectItem>
+      <SelectItem value="Docker">Docker</SelectItem>
+      <SelectItem value="MongoDB">MongoDB</SelectItem>
+      <SelectItem value="HTML">HTML</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+
             </div>
             <div>
               <Label>Course Level</Label>
               <Select
-                defaultValue={input.courseLevel}
+              value={input.courseLevel}
                 onValueChange={selectCourseLevel}
               >
                 <SelectTrigger className="w-[180px]">
@@ -258,7 +261,7 @@ const CourseTab = () => {
               Cancel
             </Button>
             <Button disabled={false} onClick={updateCourseHandler}>
-              {false ? (
+              {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Please wait
