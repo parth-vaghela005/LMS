@@ -156,11 +156,11 @@ const Profile = () => {
       <div>
         <h1 className="font-medium text-lg">Courses you're enrolled in</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-5">
-          {
+          {/* {
             [1,2,3,4,5].map((course,index) => (
               <Course key={index}/>
             ))
-          }
+          } */}
         </div>
       </div>
     </div>
