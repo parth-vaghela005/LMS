@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from "@/slices/api/courseApi";
 import axios from "axios";
 // import { useEditLectureMutation, useGetLectureByIdQuery, useRemoveLectureMutation } from "@/features/api/courseApi";
 // import axios from "axios";
@@ -31,20 +32,22 @@ const LectureTab = () => {
   const params = useParams();
   const { courseId, lectureId } = params;
 
-//   const {data:lectureData} = useGetLectureByIdQuery(lectureId);
-//   const lecture = lectureData?.lecture;
+  const {data:lectureData,refetch} = useGetLectureByIdQuery(lectureId);
+  const lecture = lectureData?.lecture;
 
-//   useEffect(()=>{
-//     if(lecture){
-//       setLectureTitle(lecture.lectureTitle);
-//       setIsFree(lecture.isPreviewFree);
-//       setUploadVideoInfo(lecture.videoInfo)
-//     }
-//   },[lecture])
+  useEffect(()=>{
+    if(lecture){
+      refetch();
+      setLectureTitle(lecture.lectureTitle);
+      setIsFree(lecture.isPreviewFree);
+      setUploadVideoInfo(lecture.videoInfo)
+      
+    }
+  },[lecture,lectureId])
 
-//   const [edtiLecture, { data, isLoading, error, isSuccess }] =
-//     useEditLectureMutation();
-//     const [removeLecture,{data:removeData, isLoading:removeLoading, isSuccess:removeSuccess}] = useRemoveLectureMutation();
+  const [edtiLecture, { data, isLoading, error, isSuccess }] =
+    useEditLectureMutation();
+    const [removeLecture,{data:removeData, isLoading:removeLoading, isSuccess:removeSuccess}] = useRemoveLectureMutation();
 
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
@@ -79,36 +82,36 @@ const LectureTab = () => {
     }
   };
 
-//   const editLectureHandler = async () => {
-//     console.log({ lectureTitle, uploadVideInfo, isFree, courseId, lectureId });
+  const editLectureHandler = async () => {
+    console.log({ lectureTitle, uploadVideInfo, isFree, courseId, lectureId });
 
-//     await edtiLecture({
-//       lectureTitle,
-//       videoInfo:uploadVideInfo,
-//       isPreviewFree:isFree,
-//       courseId,
-//       lectureId,
-//     });
-//   };
+    await edtiLecture({
+      lectureTitle,
+      videoInfo:uploadVideInfo,
+      isPreviewFree:isFree,
+      courseId,
+      lectureId,
+    });
+  };
 
-//   const removeLectureHandler = async () => {
-//     await removeLecture(lectureId);
-//   }
+  const removeLectureHandler = async () => {
+    await removeLecture(lectureId);
+  }
 
-//   useEffect(() => {
-//     if (isSuccess) {
-//       toast.success(data.message);
-//     }
-//     if (error) {
-//       toast.error(error.data.message);
-//     }
-//   }, [isSuccess, error]);
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message);
+    }
+    if (error) {
+      toast.error(error.data.message);
+    }
+  }, [isSuccess, error]);
 
-//   useEffect(()=>{
-//     if(removeSuccess){
-//       toast.success(removeData.message);
-//     }
-//   },[removeSuccess])
+  useEffect(()=>{
+    if(removeSuccess){
+      toast.success(removeData.message);
+    }
+  },[removeSuccess])
 
   return (
     <Card>
@@ -120,16 +123,13 @@ const LectureTab = () => {
           </CardDescription>
         </div>
         <div className="flex items-center gap-2">
-          {/* <Button disbaled={removeLoading} variant="destructive" onClick={removeLectureHandler}>
+           <Button disbaled={removeLoading} variant="destructive" onClick={removeLectureHandler}>
             {
               removeLoading ? <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
               Please wait
               </> : "Remove Lecture"
             }
-          </Button> */}
-          <Button>
-          Remove Lecture
           </Button>
         </div>
       </CardHeader>
@@ -171,7 +171,7 @@ const LectureTab = () => {
         )}
 
         <div className="mt-4">
-          {/* <Button disabled={isLoading} onClick={editLectureHandler}>
+          <Button disabled={isLoading} onClick={editLectureHandler}>
               {
                 isLoading ? <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
@@ -179,10 +179,10 @@ const LectureTab = () => {
                 </> : "Update Lecture"
               }
             
-          </Button> */}
-           <Button>
-           Update Lecture
           </Button>
+           {/* <Button>
+           Update Lecture
+          </Button> */}
         </div>
       </CardContent>
     </Card>
