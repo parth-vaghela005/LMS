@@ -70,6 +70,7 @@ export const authApi = createApi({
                 body: formData, // Make sure to send FormData for file uploads
             }),
         }),
+  
     }),
 });
 
