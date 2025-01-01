@@ -3,8 +3,8 @@ const app = express();
 const dotenv = require('dotenv');
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose')
-// const User = require('../server/models/user.model.js');
 const cors = require('cors')
+const mediaRoute  = require('../server/routes/media.route.js')
 const authrouter  = require('../server/routes/Authroute.js')
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -20,7 +20,7 @@ mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
   .catch((error) => console.error('MongoDB connection error:', error));
   app.use('/api/v1/auth',authrouter)
+  app.use("/api/v1/media",mediaRoute )
 app.listen(PORT, () => {
-    // connectDB()
   console.log(`Server is running on http://localhost:${PORT}`);
 });
