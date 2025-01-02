@@ -8,6 +8,5 @@ const lectureSchema = new mongoose.Schema({
   publicId: { type: String },
   isPreviewFree: { type: Boolean },
 },{timestamps:true});
-
  const Lecture = mongoose.model("Lecture", lectureSchema);
     module.exports = Lecture;
