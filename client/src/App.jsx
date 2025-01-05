@@ -69,13 +69,17 @@ export default function App() {
               element: <EditCourse />,
             },
             {
-              path: "course/:courseId/lecture",
+              path: "course/:courseId/lecture/",
               element: <CreateLecture/>,
             },
             {
-              path: "course/:courseId/lecture/:lectureId",
+              path: "course/:courseId/lecture/create",
               element: <EditLecture/>,
             },
+            // {
+            //   path: "course/:courseId/lecture/:lectureId",
+            //   element: <EditLecture/>,
+            // },
           ],
         },
       ],
