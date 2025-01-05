@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* HorizontalLoader.css */
+.loader-container {
+    width: 100%;
+    height: 4px; /* Adjust the height of the loader */
+    background-color: #ddd; /* Background color of the loader container */
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .loader {
+    width: 0%; /* Start with no width */
+    height: 100%;
+    background-color: rgb(177, 3, 3); /* Orange color for the loader */
+    animation: moveLoader 2s infinite linear; /* Infinite animation */
+  }
+  
+  @keyframes moveLoader {
+    0% {
+      width: 0%;
+      left: 0%;
+    }
+    50% {
+      width: 100%;
+      left: 0%;
+    }
+    100% {
+      width: 0%;
+      left: 100%;
+    }
+  }
+  
+  
