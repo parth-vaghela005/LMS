@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEditCourseMutation, useGetCourseByIdQuery } from "@/slices/api/courseApi";
+import { useEditCourseMutation, useGetCourseByIdQuery, usePublishCourseMutation } from "@/slices/api/courseApi";
 // import {
 //   useEditCourseMutation,
 //   useGetCourseByIdQuery,
@@ -46,7 +46,7 @@ const CourseTab = () => {
   const { data: courseByIdData, isLoading: courseByIdLoading , refetch} =
     useGetCourseByIdQuery(courseId);
 
-    // const [publishCourse, {}] = usePublishCourseMutation();
+    const [publishCourse, {}] = usePublishCourseMutation();
  
   useEffect(() => {
     if (courseByIdData?.course) { 
@@ -110,17 +110,17 @@ const CourseTab = () => {
     
   };
 
-  // const publishStatusHandler = async (action) => {
-  //   try {
-  //     const response = await publishCourse({courseId, query:action});
-  //     if(response.data){
-  //       refetch();
-  //       toast.success(response.data.message);
-  //     }
-  //   } catch (error) {
-  //     toast.error("Failed to publish or unpublish course");
-  //   }
-  // }
+  const publishStatusHandler = async (action) => {
+    try {
+      const response = await publishCourse({courseId, query:action});
+      if(response.data){
+        refetch();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to publish or unpublish course");
+    }
+  }
 
   useEffect(() => {
     if (isSuccess) {
@@ -143,12 +143,12 @@ const CourseTab = () => {
           </CardDescription>
         </div>
         <div className="space-x-2">
-          {/* <Button disabled={courseByIdData?.course.lectures.length === 0} variant="outline" onClick={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
+          <Button disabled={courseByIdData?.course.lectures.length === 0} variant="outline" onClick={()=> publishStatusHandler(courseByIdData?.course.isPublished ? "false" : "true")}>
             {courseByIdData?.course.isPublished ? "Unpublished" : "Publish"}
-          </Button> */}
-          <Button  variant="outline" >
-            {true ? "Unpublished" : "Publish"}
           </Button>
+          {/* <Button  variant="outline" >
+            {true ? "Unpublished" : "Publish"}
+          </Button> */}
           <Button>Remove Course</Button>
         </div>
       </CardHeader>

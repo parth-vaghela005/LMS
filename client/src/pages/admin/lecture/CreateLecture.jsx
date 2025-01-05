@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ArrowLeft ,PlusCircle} from "lucide-react";
+// import { ExclamationCircle } from 'lucide-react';
 import { useCreateLectureMutation, useGetCourseLectureQuery } from "@/slices/api/courseApi";
 // import {
 //   useCreateLectureMutation,
@@ -14,10 +16,17 @@ import Lecture from "./Lecture";
 // import Lecture from "./Lecture";
 
 const CreateLecture = () => {
-  const [lectureTitle, setLectureTitle] = useState("");
+  const navigate  = useNavigate();
   const params = useParams();
   const courseId = params.courseId;
-  const navigate = useNavigate();
+  // const courseId  = useParams.courseId;
+  const goToUpdateLecture = () => {
+    // navigate(`${lecture._id}`);
+    navigate(`create`);
+  };
+  const [lectureTitle, setLectureTitle] = useState("");
+
+  // const navigate = useNavigate();
 //   const isLoading = false;
   const [createLecture, { data, isLoading, isSuccess, error }] =
     useCreateLectureMutation();
@@ -31,8 +40,7 @@ const CreateLecture = () => {
 
   const createLectureHandler = async () => {
     await createLecture({ lectureTitle, courseId });
-    // console.log(lectureTitle, courseId);
-    
+     
   };
 
   useEffect(() => {
@@ -54,12 +62,11 @@ const CreateLecture = () => {
           Let's add lectures, add some basic details for your new lecture
         </h1>
         <p className="text-sm">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus,
-          laborum!
+        Add some key details for your new lecture to get started.
         </p>
       </div>
       <div className="space-y-4">
-        <div>
+        {/* <div>
           <Label>Title</Label>
           <Input
             type="text"
@@ -67,30 +74,40 @@ const CreateLecture = () => {
             onChange={(e) => setLectureTitle(e.target.value)}
             placeholder="Your Title Name"
           />
-        </div>
+        </div> */}
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            onClick={() => navigate(`/admin/course/${courseId}`)}
-          >
-            Back to course
-          </Button>
-          <Button disabled={isLoading} onClick={createLectureHandler}>
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Please wait
-              </>
-            ) : (
-              "Create lecture"
-            )}
-          </Button>
+        <Button
+  variant="outline"
+  className="flex items-center space-x-2 border-gray-500 text-gray-700 hover:bg-gray-50"
+  onClick={() => navigate(`/admin/course/${courseId}`)}
+>
+  <ArrowLeft className="h-5 w-5" />
+  <span>Back to Course</span>
+</Button>
+
+<Button disabled={isLoading} onClick={goToUpdateLecture} className="flex items-center space-x-2">
+  {isLoading ? (
+    <>
+      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      <span>Please wait</span>
+    </>
+  ) : (
+    <>
+      <PlusCircle className="h-5 w-5 text-blue-500" />
+      <span>Create Lecture</span>
+    </>
+  )}
+</Button>
         </div>
         <div className="mt-10">
           {lectureLoading ? (
             <p>Loading lectures...</p>
           ) :lectureData.lectures.length == 0 ? (
-            <p>No lectures availabe</p>
+            <div className="flex flex-col items-center justify-center h-full">
+  {/* <ExclamationCircle className="h-6 w-6 mr-2 text-yellow-500" /> */}
+  <p className="text-lg font-semibold">No lectures available yet</p>
+</div>
+
           ) : (
             lectureData.lectures.map((lecture, index) => (
               <Lecture
