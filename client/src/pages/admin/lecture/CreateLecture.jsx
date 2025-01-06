@@ -66,7 +66,7 @@ const CreateLecture = () => {
         </p>
       </div>
       <div className="space-y-4">
-        {/* <div>
+        <div>
           <Label>Title</Label>
           <Input
             type="text"
@@ -74,7 +74,7 @@ const CreateLecture = () => {
             onChange={(e) => setLectureTitle(e.target.value)}
             placeholder="Your Title Name"
           />
-        </div> */}
+        </div>
         <div className="flex items-center gap-2">
         <Button
   variant="outline"
@@ -85,7 +85,7 @@ const CreateLecture = () => {
   <span>Back to Course</span>
 </Button>
 
-<Button disabled={isLoading} onClick={goToUpdateLecture} className="flex items-center space-x-2">
+<Button disabled={isLoading} onClick={createLectureHandler} className="flex items-center space-x-2">
   {isLoading ? (
     <>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
