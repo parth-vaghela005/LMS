@@ -64,7 +64,8 @@ const CourseDetail = () => {
               {course.lectures.map((lecture, idx) => (
                 <div key={idx} className="flex items-center gap-3 text-sm">
                   <span>
-                    <PlayCircle size={14} />
+                    {idx === 0 ? <PlayCircle size={14} /> : <Lock size={14} />}
+                    {/* <PlayCircle size={14} /> */}
                   </span>
                   <p>{lecture.lectureTitle}</p>
                 </div>
@@ -98,5 +99,4 @@ const CourseDetail = () => {
     </div>
   );
 };
-
 export default CourseDetail;
