@@ -72,14 +72,14 @@ export default function App() {
               path: "course/:courseId/lecture/",
               element: <CreateLecture/>,
             },
-            {
-              path: "course/:courseId/lecture/create",
-              element: <EditLecture/>,
-            },
             // {
-            //   path: "course/:courseId/lecture/:lectureId",
+            //   path: "course/:courseId/lecture/:",
             //   element: <EditLecture/>,
             // },
+            {
+              path: "course/:courseId/lecture/:lectureId",
+              element: <EditLecture/>,
+            },
           ],
         },
       ],
