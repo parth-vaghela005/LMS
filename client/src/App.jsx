@@ -13,6 +13,7 @@ import EditCourse from "./pages/admin/course/EditCourse";
 import CreateLecture from "./pages/admin/lecture/CreateLecture";
 import EditLecture from "./pages/admin/lecture/EditLecture";
 import CourseDetail from "./pages/student/CourseDetail";
+import SearchPage from "./pages/student/SearchPage";
 export default function App() {
   const appRouter = createBrowserRouter([
     {
@@ -39,6 +40,14 @@ export default function App() {
         {
           path: "profile",
           element: <Profile />,
+        },
+        {
+          path: "course/search",
+          element: (
+            // <ProtectedRoute>
+              <SearchPage />
+            // </ProtectedRoute>
+          ),
         },
         {
           path: "course-detail/:courseId",
