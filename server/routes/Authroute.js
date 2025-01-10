@@ -2,9 +2,12 @@ const express  = require('express')
 const {register,login,getUserProfile, updateProfile, logout,createUser}  = require('../controller/user.controller.js')
 const isAuthenticated  = require('../middlewares/isAuthenticated.js')
 const upload = require('../utils/multer.js')
-const { createCourse,getCreatorCourses, editCourse, getCourseById,createLecture, getCourseLecture, editLecture, removeLecture, getLectureById, togglePublishCourse,getPublishedCourse, searchCourse } = require('../controller/course.controller.js')
+const { createCourse,getCreatorCourses, editCourse, getCourseById,createLecture, getCourseLecture, editLecture, removeLecture, getLectureById, togglePublishCourse,getPublishedCourse, searchCourse, initiatePurchase, simulatePaymentWithCard, Payment } = require('../controller/course.controller.js')
 const router  = express.Router()
 router.post('/registration',register)
+router.post('/direct-payment',Payment)
+// router.post('/initiate', initiatePurchase);
+// router.post('/simulate-payment-with-card', simulatePaymentWithCard);
 router.get('/search',isAuthenticated,searchCourse)
 router.post('/createuser',createUser)
 router.get('/',getPublishedCourse)
