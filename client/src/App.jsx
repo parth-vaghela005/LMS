@@ -14,6 +14,8 @@ import CreateLecture from "./pages/admin/lecture/CreateLecture";
 import EditLecture from "./pages/admin/lecture/EditLecture";
 import CourseDetail from "./pages/student/CourseDetail";
 import SearchPage from "./pages/student/SearchPage";
+import DirectPaymentForm from "./pages/student/DirectPaymentForm";
+import PaymentSuccessPage from "./pages/student/PaymentSuccessPage";
 export default function App() {
   const appRouter = createBrowserRouter([
     {
@@ -41,6 +43,16 @@ export default function App() {
           path: "profile",
           element: <Profile />,
         },
+        {
+          path: "payment",
+          element: <DirectPaymentForm />,
+        },
+        {
+          path: "payment-success",
+          element: <PaymentSuccessPage />,
+        },
+
+       
         {
           path: "course/search",
           element: (
