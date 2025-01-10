@@ -1,6 +1,9 @@
 const Course = require("../models/course.model.js");
 const Lecture = require("../models/lecture.model.js");
+const { v4: uuidv4 } = require('uuid');
+// const Order = require('../models/Order.js');
 const { deleteMediaFromCloudinary, deleteVideoFromCloudinary, uploadMedia } = require("../utils/cloudinary.js");
+const { Order } = require("../models/Order.js");
 const createCourse = async (req, res) => {
     try {
         const { courseTitle, category } = req.body;
@@ -341,8 +344,38 @@ const  searchCourse = async (req,res) => {
     }
 }
 
-
+const Payment  = async (req, res) => {
+    const { userId, courseId, cardNumber, expiryDate, cvv, amount } = req.body;
   
+    // Basic validation
+    if (!userId || !courseId || !cardNumber || !expiryDate || !cvv || !amount) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+  
+    // Mock card validation
+    const isCardValid = cardNumber.startsWith('4') && cvv.length === 3;
+    if (!isCardValid) {
+      return res.status(400).json({ message: 'Invalid card details' });
+    }
+  
+    // Create Order
+    const order = new Order({
+      orderId: `ORD-${uuidv4()}`,
+      userId,
+      courseId,
+      amount,
+      paymentStatus: 'completed',
+      transactionId: `TXN-${Date.now()}`,
+    });
+  
+    await order.save();
+  
+    res.status(200).json({
+      message: 'Payment successful',
+      orderId: order.orderId,
+      transactionId: order.transactionId,
+    });
+  }
 module.exports = {
     createCourse,
     getCreatorCourses,
@@ -355,5 +388,6 @@ module.exports = {
     getLectureById,
     togglePublishCourse,
     getPublishedCourse,
-    searchCourse
+    searchCourse,
+    Payment
 };
