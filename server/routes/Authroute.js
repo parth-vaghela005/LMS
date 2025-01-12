@@ -3,12 +3,16 @@ const {register,login,getUserProfile, updateProfile, logout,createUser}  = requi
 const isAuthenticated  = require('../middlewares/isAuthenticated.js')
 const upload = require('../utils/multer.js')
 const { createCourse,getCreatorCourses, editCourse, getCourseById,createLecture, getCourseLecture, editLecture, removeLecture, getLectureById, togglePublishCourse,getPublishedCourse, searchCourse, initiatePurchase, simulatePaymentWithCard, Payment } = require('../controller/course.controller.js')
+// const { payment } = require('../controller/payment.js')
+const { createCheckoutSession, getPurchasedCourse } = require('../controller/coursePurchase.controller.js')
 const router  = express.Router()
 router.post('/registration',register)
-router.post('/direct-payment',Payment)
+// router.post('/direct-payment',Payment)
+router.post('/create-checkout-session',isAuthenticated,createCheckoutSession)
 // router.post('/initiate', initiatePurchase);
 // router.post('/simulate-payment-with-card', simulatePaymentWithCard);
 router.get('/search',isAuthenticated,searchCourse)
+router.get('/purchased',getPurchasedCourse)
 router.post('/createuser',createUser)
 router.get('/',getPublishedCourse)
 router.post('/create',isAuthenticated,createCourse)
