@@ -105,7 +105,11 @@ const getCourseById = async (req, res) => {
     try {
         const { courseId } = req.params;
 
-        const course = await Course.findById(courseId);
+        const course = await Course.findById(courseId)
+      .populate("lectures", "lectureTitle videoUrl") // Populate lecture fields
+      .populate("creator", "name photoUrl") // Populate creator's name and email
+      .exec();
+console.log("course",course);
 
         if (!course) {
             return res.status(404).json({
@@ -343,39 +347,6 @@ const  searchCourse = async (req,res) => {
         
     }
 }
-
-const Payment  = async (req, res) => {
-    const { userId, courseId, cardNumber, expiryDate, cvv, amount } = req.body;
-  
-    // Basic validation
-    if (!userId || !courseId || !cardNumber || !expiryDate || !cvv || !amount) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-  
-    // Mock card validation
-    const isCardValid = cardNumber.startsWith('4') && cvv.length === 3;
-    if (!isCardValid) {
-      return res.status(400).json({ message: 'Invalid card details' });
-    }
-  
-    // Create Order
-    const order = new Order({
-      orderId: `ORD-${uuidv4()}`,
-      userId,
-      courseId,
-      amount,
-      paymentStatus: 'completed',
-      transactionId: `TXN-${Date.now()}`,
-    });
-  
-    await order.save();
-  
-    res.status(200).json({
-      message: 'Payment successful',
-      orderId: order.orderId,
-      transactionId: order.transactionId,
-    });
-  }
 module.exports = {
     createCourse,
     getCreatorCourses,
@@ -389,5 +360,4 @@ module.exports = {
     togglePublishCourse,
     getPublishedCourse,
     searchCourse,
-    Payment
 };
