@@ -113,7 +113,20 @@ export const courseApi = createApi({
           method: "GET",
         }),
       }),
-      
+      getCourseById: builder.query({
+        query: (courseId) => ({
+          url: `/getcourse/${courseId}`,
+          method: "GET",
+        }),
+      }),
+      createCheckoutSession: builder.mutation({
+        query: (courseId) => ({
+          url: "/create-checkout-session",
+          method: "POST",
+          body: { courseId },
+        }),
+      }),
+   
   }),
 });
 export const { useCreateCourseMutation ,
@@ -125,5 +138,7 @@ export const { useCreateCourseMutation ,
   useRemoveLectureMutation,
   useGetLectureByIdQuery,
   usePublishCourseMutation,
-  useGetSearchCourseQuery
+  useGetSearchCourseQuery,
+  useCreateCheckoutSessionMutation
+
  } = courseApi;

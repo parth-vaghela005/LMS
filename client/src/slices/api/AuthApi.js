@@ -70,7 +70,12 @@ export const authApi = createApi({
                 body: formData, // Make sure to send FormData for file uploads
             }),
         }),
-  
+        getmycourse: builder.query({
+            query: () => ({
+                url: "purchased",
+                method: "GET",
+            }),
+        }),
     }),
 });
 
@@ -79,5 +84,6 @@ export const {
     useLoginUserMutation,
     useLoadUserQuery,
     useUpdateUserMutation,
-    useLogoutUserMutation
+    useLogoutUserMutation,
+    useGetmycourseQuery,
 } = authApi;
