@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Course from "./Course";
 import { useGetCreatorCourseQuery } from "@/slices/api/courseApi";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const Courses = () => {
   const [res,setres] = useState([]);
@@ -44,7 +45,10 @@ console.log(res+ "parth");
           
           )} */}
           {  res?.courses?.map((course, index) => (
+
+<Link  to  ={`/course-detail/${course._id}`} >
               <Course key={index} course={course} />
+            </Link>
             ))
           }
         </div>
