@@ -16,6 +16,7 @@ import CourseDetail from "./pages/student/CourseDetail";
 import SearchPage from "./pages/student/SearchPage";
 import DirectPaymentForm from "./pages/student/DirectPaymentForm";
 import PaymentSuccessPage from "./pages/student/PaymentSuccessPage";
+import MyCourse from "./pages/student/mycourse";
 export default function App() {
   const appRouter = createBrowserRouter([
     {
@@ -64,6 +65,10 @@ export default function App() {
         {
           path: "course-detail/:courseId",
           element: <CourseDetail />,
+        },
+        {
+          path: "course-progress/:courseId",
+          element: <MyCourse />,
         },
         {
           path: "admin",
