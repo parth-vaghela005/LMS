@@ -12,7 +12,7 @@ router.post('/create-checkout-session',isAuthenticated,createCheckoutSession)
 // router.post('/initiate', initiatePurchase);
 // router.post('/simulate-payment-with-card', simulatePaymentWithCard);
 router.get('/search',isAuthenticated,searchCourse)
-router.get('/purchased',getPurchasedCourse)
+router.get('/purchased',isAuthenticated,getPurchasedCourse)
 router.post('/createuser',createUser)
 router.get('/',getPublishedCourse)
 router.post('/create',isAuthenticated,createCourse)
