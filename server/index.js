@@ -21,6 +21,7 @@ mongoose.connect(process.env.MONGO_URL)
   .catch((error) => console.error('MongoDB connection error:', error));
   app.use('/api/v1/auth',authrouter)
   app.use("/api/v1/media",mediaRoute )
+  mongoose.set('strictPopulate', false);
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
