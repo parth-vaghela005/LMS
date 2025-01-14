@@ -90,24 +90,28 @@ console.log(newPurchase);
 };
 
  const getPurchasedCourse  = async (req, res) => {
-    // const courseId = req.params.courseId;
-    // const userId = req.id;
-    const course = await CoursePurchase.find({ userId: "6783d181e9db30545793fbfe" })
-    .populate({
-      path: "courseId", // Populate courseId field
-      select: "courseTitle courseThumbnail coursePrice",
-      populate: {
-        path: "lectures", // Populate lectures within the course
-        select: "lectureTitle videoUrl"
-      }
+  try {
+   
+    const userId = req.id; // Replace with your authentication middleware logic
+    
+    // Find the user and populate their enrolled courses
+    const user = await User.findById(userId).populate({
+        path: 'enrolledCourses',
+        select: 'courseTitle category courseLevel coursePrice courseThumbnail',
     });
-    // .find({  userId:""})
- 
 
- if (!course) {
-    return res.status(404).json({ message: "Course not found!" });
- }
-    return res.status(200).json({ course });
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+        message: 'Enrolled courses retrieved successfully',
+        enrolledCourses: user.enrolledCourses,
+    });
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+}
  }
 module.exports = {
   createCheckoutSession,
