@@ -122,7 +122,14 @@ const logout = async (req, res) => {
       const userId = req.id;
       const {name} = req.body;
       const profilePhoto = req.file;
-
+const updatedData    = {}
+if(!name && !profilePhoto){
+  return res.status(400).json({
+      success:false,
+      message:"Name or profile photo is required"
+  })
+}
+  //  updatedData.name = name;
       const user = await User.findById(userId);
       if(!user){
           return res.status(404).json({
@@ -130,16 +137,23 @@ const logout = async (req, res) => {
               success:false
           }) 
       }
-
-      if(user.photoUrl){
-          const publicId = user.photoUrl.split("/").pop().split(".")[0]; 
-          deleteMediaFromCloudinary(publicId);
+      if(name){
+        updatedData.name = name
       }
-
-      const cloudResponse = await uploadMedia(profilePhoto.path);
+if(profilePhoto){
+  if(user.photoUrl){
+    const publicId = user.photoUrl.split("/").pop().split(".")[0]; 
+    deleteMediaFromCloudinary(publicId);
+    const cloudResponse = await uploadMedia(profilePhoto.path);
       const photoUrl = cloudResponse.secure_url;
+      updatedData.photoUrl = photoUrl
+}
+}
+      
 
-      const updatedData = {name, photoUrl};
+      
+
+      // const updatedData = {name, photoUrl};
       const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {new:true}).select("-password");
 
       return res.status(200).json({
