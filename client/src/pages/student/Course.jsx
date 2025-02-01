@@ -23,7 +23,7 @@ const Course= ({course}) => {
     course.courseTitle
    }
         </h1>
-        <ReviewComponent/>
+        {/* <ReviewComponent/> */}
         </div>
  
         <div className="flex items-center justify-between">

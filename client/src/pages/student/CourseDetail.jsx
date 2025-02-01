@@ -16,6 +16,8 @@ import { BadgeInfo, Lock, PlayCircle } from "lucide-react";
 import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { useNavigate, useParams } from "react-router-dom";
+import ReviewComponent from "@/ReviewComponent";
+// import ReviewComponent from "@/ReviewComponent";
 
 const CourseDetail = () => {
   const user = useSelector((state) => state.auth.user);
@@ -145,8 +147,10 @@ const CourseDetail = () => {
         </div>
       </div>
 
-    
-      
+    <ReviewComponent courseId={courseId} />
+    {
+  console.log(courseId)
+}
     </div>
   );
 };
