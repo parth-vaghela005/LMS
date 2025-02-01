@@ -73,14 +73,7 @@ const ReviewComponent = ({ courseId }) => {
             {allReviews.slice(0, 3).map((review, index) => (
               <div
                 key={index}
-                style={{console.log("ReviewComponent rendered");
-console.log("Course ID:", courseId);
-console.log("Rating:", rating);
-console.log("Description:", description);
-console.log("Error Message:", errorMessage);
-console.log("Success Message:", successMessage);
-console.log("All Reviews:", allReviews);
-console.log("Show Dialog:", showDialog);
+                style={{
                   padding: "10px",
                   marginBottom: "10px",
                   borderBottom: "1px solid #ccc",
