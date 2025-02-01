@@ -189,8 +189,6 @@ const getCourseLecture = async (req, res) => {
                 message:"Lecture not found!"
             })
         }
-
-        // update lecture
         if(lectureTitle) lecture.lectureTitle = lectureTitle;
         if(videoInfo?.videoUrl) lecture.videoUrl = videoInfo.videoUrl;
         if(videoInfo?.publicId) lecture.publicId = videoInfo.publicId;
