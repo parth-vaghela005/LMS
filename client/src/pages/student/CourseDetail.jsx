@@ -147,7 +147,7 @@ const CourseDetail = () => {
         </div>
       </div>
 
-    <ReviewComponent courseId={courseId} />
+    <ReviewComponent  />
     {
   console.log(courseId)
 }
