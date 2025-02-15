@@ -20,6 +20,10 @@ const courseSchema = new mongoose.Schema({
     courseThumbnail:{
         type:String
     },
+    certificate:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Certificate'
+    },
     enrolledStudents:[
         {
             type:mongoose.Schema.Types.ObjectId,
