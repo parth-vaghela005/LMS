@@ -36,7 +36,7 @@ console.log("course",course);
     });
 console.log(newPurchase);
 
-    // Create a Stripe checkout session
+  
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
