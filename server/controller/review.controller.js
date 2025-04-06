@@ -43,6 +43,13 @@ console.log(description,"description");
     }
   }
 };
+const getReviews = async (req, res) => {
+  const courseId  = req.params.courseId;
+  console.log(courseId);
+  const data  = await Review.find({courseId:courseId}).populate("userId", "name photoUrl")
+  res.status(200).json(data);
+}
 module.exports = {
-  createReview
+  createReview,
+  getReviews
 };

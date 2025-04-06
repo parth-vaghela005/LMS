@@ -1,18 +1,27 @@
 const User = require("../models/user.model.js");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken.js");
-const Parth = require('../models/parth.model.js');
+// const Parth = require('../models/parth.model.js');
 const { deleteMediaFromCloudinary,uploadMedia,deleteVideoFromCloudinary } = require("../utils/cloudinary.js");
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password , role } = req.body;
+    // console.log("Data");
+    
+    // let {role} = req.body
+    console.log( "data"  + req.body.name);
+    
+    // console.log(req.body + "all data");
+    
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
         message: "All fields are required.",
       });
     }
-
+ if(!role){
+  role = 'student'
+ }
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
@@ -26,6 +35,7 @@ const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      role
     });
 
     await userData.save();
@@ -70,6 +80,7 @@ const login = async (req, res) => {
         message: "Incorrect  password",
       });
     }
+    console.log(user);
     generateToken(res, user, `Welcome back ${user.name}`);
   } catch (error) {
     console.log(error);

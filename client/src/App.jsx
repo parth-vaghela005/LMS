@@ -17,6 +17,17 @@ import SearchPage from "./pages/student/SearchPage";
 import DirectPaymentForm from "./pages/student/DirectPaymentForm";
 import PaymentSuccessPage from "./pages/student/PaymentSuccessPage";
 import MyCourse from "./pages/student/mycourse";
+import Quiz from "./pages/student/Quiz";
+import QuizForm from "./pages/student/QuizForm";
+import QuizResult from "./pages/student/QuizResult";
+import {
+  AdminRoute,
+  AuthenticatedUser,
+  StudentRoute,
+  ProtectedRoute,
+} from "./components/ProtectedRoutes";
+import Signup from "./pages/Signup";
+import CourseProgress from "./pages/student/CourseProgress";
 export default function App() {
   const appRouter = createBrowserRouter([
     {
@@ -26,23 +37,48 @@ export default function App() {
         {
           path: "/",
           element: (
-            <>
+            <StudentRoute>
               <HeroSection />
               <Courses />
-            </>
+            </StudentRoute>
           ),
         },
         {
           path: "login",
-          element: <Login />,
+          element: <Login />
         },
         {
+          path: "signup",
+          element: <Signup />
+        },
+
+        {
           path: "my-learning",
-          element: <MyLearning />,
+          element: (
+            <ProtectedRoute>
+              <MyLearning />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "create",
+          element: <QuizForm />,
+        },
+        {
+          path: "/:lectureId/quiz/:Id",
+          element: <Quiz />,
         },
         {
           path: "profile",
-          element: <Profile />,
+          element: (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "result",
+          element: <QuizResult />,
         },
         {
           path: "payment",
@@ -57,25 +93,30 @@ export default function App() {
         {
           path: "course/search",
           element: (
-            // <ProtectedRoute>
+            <ProtectedRoute>
               <SearchPage />
-            // </ProtectedRoute>
+            </ProtectedRoute>
           ),
         },
         {
           path: "course-detail/:courseId",
-          element: <CourseDetail />,
+          element: (
+            <ProtectedRoute>
+              <CourseDetail />
+            </ProtectedRoute>
+          ),
         },
+            
         {
           path: "course-progress/:courseId",
-          element: <MyCourse />,
+          element: <CourseProgress />,
         },
         {
           path: "admin",
           element: (
-        
+            <AdminRoute>
               <Sidebar />
-           
+         </AdminRoute>
           ),
           children: [
             {
@@ -86,6 +127,11 @@ export default function App() {
               path: "course",
               element: <CourseTable/>,
             },
+            {
+                 path: "profile",
+              element: <Profile/>,
+            },
+            
             {
               path: "course/create",
               element: <AddCourse />,
@@ -106,12 +152,15 @@ export default function App() {
               path: "course/:courseId/lecture/:lectureId",
               element: <EditLecture/>,
             },
+            {
+              path: "course/:courseId/lecture/:lectureId/addquize",
+              element: <QuizForm/>,
+            },
           ],
         },
       ],
     },
   ]);
-
   return (
     <main>
       <RouterProvider router={appRouter} />

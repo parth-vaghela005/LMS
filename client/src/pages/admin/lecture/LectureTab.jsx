@@ -55,8 +55,8 @@ const LectureTab = () => {
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        return toast.error("File size exceeds 10MB");
+      if (file.size > 100 * 1024 * 1024) {
+        return toast.error("File size exceeds 100MB. Please upload a smaller file.");
       }
       if (!file.type.startsWith("video/")) {
         return toast.error("Please upload a valid video file");

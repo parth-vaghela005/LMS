@@ -1,24 +1,27 @@
 import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./rootRedure.js";
+import rootReducer from "./rootRedure"; 
 import { authApi } from "@/slices/api/AuthApi";
+import { courseApi } from "@/slices/api/courseApi";
+import { courseProgressApi } from "@/slices/api/courseProgressApi"; // ✅ Import missing API
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // Default is localStorage for web
-import { courseApi } from "@/slices/api/courseApi.js";
+import storage from "redux-persist/lib/storage"; 
 
-// Configuration for persisting
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["auth"], // Add reducers you want to persist
+    whitelist: ["auth", "quiz"], 
 };
 
-// Wrap the root reducer with persistReducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const appStore = configureStore({
     reducer: persistedReducer,
     middleware: (defaultMiddleware) =>
-        defaultMiddleware({ serializableCheck: false }).concat(authApi.middleware,courseApi.middleware),
+        defaultMiddleware({ serializableCheck: false }).concat(
+            authApi.middleware,
+            courseApi.middleware,
+            courseProgressApi.middleware // ✅ Add missing middleware
+        ),
 });
 
 export const persistor = persistStore(appStore);

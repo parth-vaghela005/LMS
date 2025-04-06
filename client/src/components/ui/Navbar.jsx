@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { Menu, School } from "lucide-react";
+import { FiBookOpen, FiEdit, FiLogOut } from "react-icons/fi";
+import { FiMonitor } from "react-icons/fi";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -28,13 +28,15 @@ import DarkMode from "@/DarkMode";
 import { useLogoutUserMutation } from "@/slices/api/AuthApi";
 
 const Navbar = () => {
-  const { user } = useSelector((store) => store.auth);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
     try {
+      alert("logout")
       await logoutUser();
+      navigate("/login");
     } catch (error) {
       toast.error("Logout failed.");
     }
@@ -43,75 +45,88 @@ const Navbar = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success(data?.message || "User logged out.");
-      navigate("/login");
+      // navigate("/login");
     }
   }, [isSuccess, data, navigate]);
-const user2 = {
-  role:"instructor"
-}
+
   return (
     <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
-      {/* Desktop */}
-      <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center gap-10 h-full">
-        <div className="flex items-center gap-2">
-          <School size={"30"} />
-          <Link to="/">
-            <h1 className="hidden md:block font-extrabold text-2xl">
-              E-Learning
-            </h1>
+      {/* Desktop Navbar */}
+      <div className="max-w-7xl mx-auto hidden md:flex justify-between items-center gap-10 h-full px-6">
+        <div className="flex items-center gap-6">
+          <Link to="/" className="flex items-center gap-2">
+            <School size={30} />
+            <h1 className="font-extrabold text-2xl">E-Learning</h1>
           </Link>
-        </div>
-        {/* User icons and dark mode icon  */}
-        <div className="flex items-center gap-8">
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar>
-                  <AvatarImage
-                    src={user?.photoUrl || "https://github.com/shadcn.png"}
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <Link to="my-learning">My learning</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    {" "}
-                    <Link to="profile">Edit Profile</Link>{" "}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logoutHandler}>
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                {user2?.role === "instructor" && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem><Link to="/admin/dashboard">Dashboard</Link></DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={() => navigate("/login")}>
-                Login
-              </Button>
-              <Button onClick={() => navigate("/login")}>Signup</Button>
-            </div>
+
+          {/* Show About & Contact when NOT authenticated */}
+          {!isAuthenticated && (
+            <>
+              <Link to="/about" className="text-lg font-medium hover:text-gray-600 transition">
+                About Us
+              </Link>
+              <Link to="/contact" className="text-lg font-medium hover:text-gray-600 transition">
+                Contact Us
+              </Link>
+            </>
           )}
-          <DarkMode />
         </div>
+
+        {/* User Options */}
+        <div className="flex items-center gap-6">
+  {isAuthenticated && user?.role !== "instructor" ? (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Avatar>
+          <AvatarImage src={user?.photoUrl || "https://github.com/shadcn.png"} alt="User Avatar" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          {user?.role === "student" && (
+            <Link to="/my-learning">
+              <DropdownMenuItem className="flex items-center gap-2">
+                <FiBookOpen />
+                My Courses
+              </DropdownMenuItem>
+            </Link>
+          )}
+          <Link to="/profile">
+            <DropdownMenuItem className="flex items-center gap-2">
+              <FiEdit />
+              Profile
+            </DropdownMenuItem>
+          </Link>
+          <DropdownMenuItem className="flex items-center gap-2 cursor-pointer" onClick={logoutHandler}>
+            <FiLogOut />
+            Log out
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  ) : (
+    // If the user is NOT authenticated, show Login and Sign Up buttons
+    !isAuthenticated && (
+      <div className="flex items-center gap-4">
+        <Button variant="outline" onClick={() => navigate("/login")}>
+          Login
+        </Button>
+        <Button onClick={() => navigate("/signup")}>Sign Up</Button>
       </div>
-      {/* Mobile device  */}
+    )
+  )}
+</div>
+
+
+      </div>
+
+      {/* Mobile Navbar */}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
-        <h1 className="font-extrabold text-2xl">E-learning</h1>
-        <MobileNavbar user={user}/>
+        <h1 className="font-extrabold text-2xl">E-Learning</h1>
+        <MobileNavbar user={user} isAuthenticated={isAuthenticated} logoutHandler={logoutHandler} />
       </div>
     </div>
   );
@@ -119,41 +134,74 @@ const user2 = {
 
 export default Navbar;
 
-const MobileNavbar = ({user}) => {
+// Mobile Navbar
+const MobileNavbar = ({ user, isAuthenticated, logoutHandler }) => {
   const navigate = useNavigate();
-  const user2 = {
-    role:"instructor"
-  }
-  
+
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button
-          size="icon"
-          className="rounded-full hover:bg-gray-200"
-          variant="outline"
-        >
+        <Button size="icon" className="rounded-full hover:bg-gray-200" variant="outline">
           <Menu />
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col">
         <SheetHeader className="flex flex-row items-center justify-between mt-2">
-          <SheetTitle> <Link to="/">E-Learning</Link></SheetTitle>
+          <SheetTitle>
+            <Link to="/">E-Learning</Link>
+          </SheetTitle>
           <DarkMode />
         </SheetHeader>
         <Separator className="mr-2" />
-        <nav className="flex flex-col space-y-4">
-          <Link to="/my-learning">My Learning</Link>
-          <Link to="/profile">Edit Profile</Link>
-          <p>Log out</p>
+        <nav className="flex flex-col space-y-4 mt-4">
+          {!isAuthenticated ? (
+            <>
+              <Link to="/about" className="text-lg font-medium hover:text-gray-600 transition">
+                About Us
+              </Link>
+              <Link to="/contact" className="text-lg font-medium hover:text-gray-600 transition">
+                Contact Us
+              </Link>
+              <Button variant="outline" onClick={() => navigate("/login")}>
+                Login
+              </Button>
+              <Button onClick={() => navigate("/signup")}>Sign Up</Button>
+            </>
+          ) : (
+            <>
+              {user?.role === "student" ? (
+                <Link to="/my-learning" className="flex items-center gap-2 text-lg font-medium hover:text-gray-600 transition">
+                  <FiBookOpen />
+                  My Courses
+                </Link>
+              ) : (
+                <>
+                  <Link to="/admin/dashboard" className="flex items-center gap-2 text-lg font-medium hover:text-gray-600 transition">
+                  <FiMonitor />
+                    Dashboard
+                  </Link>
+                  <Link to="/admin/course/" className="flex items-center gap-2 text-lg font-medium hover:text-gray-600 transition">
+                    <FiBookOpen />
+                    Courses
+                  </Link>
+                </>
+              )}
+
+              <Link to="/admin/profile" className="flex items-center gap-2 text-lg font-medium hover:text-gray-600 transition">
+                <FiEdit />
+                Profile
+              </Link>
+
+              <p
+                className="flex items-center gap-2 text-lg font-medium text-red-500 cursor-pointer"
+               
+              >
+                <FiLogOut   onClick={logoutHandler}  />
+                Log Out
+              </p>
+            </>
+          )}
         </nav>
-        {user2?.role === "instructor" && (
-          <SheetFooter>
-            <SheetClose asChild>
-              <Button type="submit" onClick={()=> navigate("/admin/dashboard")}>Dashboard</Button>
-            </SheetClose>
-          </SheetFooter>
-        )}
       </SheetContent>
     </Sheet>
   );

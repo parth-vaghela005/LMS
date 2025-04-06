@@ -1,6 +1,5 @@
 "use client"; // Required for Shadcn UI components
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -11,27 +10,63 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Star } from "lucide-react";
+import ReactStars from "react-rating-stars-component";
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const ReviewComponent = () => {
   const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
   const [reviews, setReviews] = useState([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [desc, setDesc] = useState("");
+  const [isLoading, setLoading] = useState(false);
+  const { courseId } = useParams(); // Get course ID from URL
 
-  // Handle star rating click
-  const handleRatingClick = (value) => {
-    setRating(value);
-  };
+  // Fetch reviews (Optimized with useCallback)
+  const fetchReviews = useCallback(async () => {
+    if (!courseId) return;
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/v1/auth/reviews/${courseId}`
+      );
+      setReviews(response.data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  }, [courseId]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   // Handle review submission
-  const handleReviewSubmit = () => {
-    if (rating > 0 && reviewText.trim() !== "") {
-      const newReview = { rating, reviewText };
-      setReviews([...reviews, newReview]);
-      setRating(0);
-      setReviewText("");
+  const submitHandler = async () => {
+    if (!rating || !desc.trim()) {
+      alert("Please provide a rating and a review.");
+      return;
     }
+
+    setLoading(true);
+    try {
+      await axios.post(`http://localhost:5000/api/v1/auth/reviews/${courseId}`, {
+        rating,
+        description: desc,
+      },
+      {
+        withCredentials: true, // Allows cookies & authentication headers to be sent
+      }
+    )
+      
+
+      alert("Review submitted successfully!");
+      setDesc(""); // Reset textarea
+      setRating(0); // Reset rating
+      fetchReviews(); // Refresh reviews
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Failed to submit review. Please try again.");
+    }
+    setLoading(false);
   };
 
   return (
@@ -39,62 +74,72 @@ const ReviewComponent = () => {
       <h2 className="text-xl font-semibold mb-4">Leave a Review</h2>
 
       {/* Star Rating */}
-      <div className="flex items-center mb-4">
-        {[1, 2, 3, 4, 5].map((value) => (
-          <Star
-            key={value}
-            className={`w-6 h-6 cursor-pointer ${
-              value <= rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
-            }`}
-            onClick={() => handleRatingClick(value)}
-          />
-        ))}
+      <div className="mb-4">
+        <ReactStars
+          count={5}
+          value={rating}
+          onChange={(newRating) => setRating(newRating)}
+          size={30}
+          activeColor="#ffd700"
+        />
       </div>
 
       {/* Review Textarea */}
       <Textarea
         placeholder="Write your review..."
-        value={reviewText}
-        onChange={(e) => setReviewText(e.target.value)}
         className="mb-4 w-full sm:w-3/4 lg:w-1/2"
+        value={desc}
+        onChange={(e) => setDesc(e.target.value)}
       />
 
       {/* Submit Button */}
-      <Button onClick={handleReviewSubmit}>Submit Review</Button>
+      <Button onClick={submitHandler} disabled={isLoading}>
+        {isLoading ? "Submitting..." : "Submit Review"}
+      </Button>
 
       {/* Show All Reviews Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog>
         <DialogTrigger asChild>
           <Button variant="link" className="mt-4">
             Show All Reviews
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] max-h-[400px] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>All Reviews</DialogTitle>
             <DialogDescription>Here are all the reviews for this course.</DialogDescription>
           </DialogHeader>
-
-          {/* Display Reviews */}
           <div className="mt-4 space-y-4">
             {reviews.length > 0 ? (
               reviews.map((review, index) => (
                 <div key={index} className="border p-3 rounded-lg">
-                  <div className="flex items-center">
-                    {[1, 2, 3, 4, 5].map((value) => (
-                      <Star
-                        key={value}
-                        className={`w-4 h-4 ${
-                          value <= review.rating ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
-                        }`}
-                      />
-                    ))}
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={review.userId?.photoUrl || "https://via.placeholder.com/50"}
+                      alt={review.userId?.name || "User"}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                    <div>
+                      <p className="font-medium">{review.userId?.name || "Anonymous"}</p>
+                      <ReactStars count={5} value={review.rating} edit={false} size={20} activeColor="#ffd700" />
+                    </div>
                   </div>
-                  <p className="mt-2 text-sm">{review.reviewText}</p>
+                  <p className="mt-2 text-sm">{review.description}</p>
                 </div>
               ))
             ) : (
-              <p className="text-sm text-gray-500">No reviews yet.</p>
+              <div className="border p-3 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <img src="https://via.placeholder.com/50" alt="John Doe" width={40} height={40} className="rounded-full" />
+                  <div>
+                    <p className="font-medium">John Doe</p>
+                    <ReactStars count={5} value={4} edit={false} size={20} activeColor="#ffd700" />
+                  </div>
+                </div>
+                <p className="mt-2 text-sm">Great course! Very informative and well-structured.</p>
+              </div>
             )}
           </div>
         </DialogContent>

@@ -15,22 +15,22 @@ import { loadStripe } from '@stripe/stripe-js';    // Stripe Initialization
 const stripePromise = loadStripe('your-publishable-key');
 
 // Custom component for loading
-const Custom = ({ children }) => {
-  const { isLoading } = useLoadUserQuery();
-  return <>{isLoading ? <Loader /> : <>{children}</>}</>;
-};
+// const Custom = ({ children }) => {
+//   const { isLoading } = useLoadUserQuery();
+//   return <>{isLoading ? <Loader /> : <>{children}</>}</>;
+// };
 
 // Render application
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={appStore}>
       <PersistGate loading={null} persistor={persistor}>
-        <Custom>
+        {/* <Custom> */}
           <Elements stripe={stripePromise}> {/* Wrap App with Elements */}
             <App />
           </Elements>
           <Toaster />
-        </Custom>
+        {/* </Custom> */}
       </PersistGate>
     </Provider>
   </StrictMode>,

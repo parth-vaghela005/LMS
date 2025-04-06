@@ -7,6 +7,12 @@ const lectureSchema = new mongoose.Schema({
   videoUrl: { type: String },
   publicId: { type: String },
   isPreviewFree: { type: Boolean },
+  test: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Test",
+    },
+  ],
 },{timestamps:true});
  const Lecture = mongoose.model("Lecture", lectureSchema);
     module.exports = Lecture;

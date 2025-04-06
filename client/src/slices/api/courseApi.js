@@ -46,6 +46,13 @@ export const courseApi = createApi({
           body: { lectureTitle },
         }),
       }),
+      // createReview: builder.mutation({
+      //   query: ({ description, rating }) => ({
+      //     url: `/${courseId}/review`,
+      //     method: "POST",
+      //     body: { lectureTitle },
+      //   }),
+      // }),
       getCourseLecture: builder.query({
         query: (courseId) => ({
           url: `/${courseId}/lecture`,

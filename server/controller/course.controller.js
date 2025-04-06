@@ -3,7 +3,7 @@ const Lecture = require("../models/lecture.model.js");
 const { v4: uuidv4 } = require('uuid');
 // const Order = require('../models/Order.js');
 const { deleteMediaFromCloudinary, deleteVideoFromCloudinary, uploadMedia } = require("../utils/cloudinary.js");
-const { Order } = require("../models/Order.js");
+// const { Order } = require("../models/Order.js");
 const createCourse = async (req, res) => {
     try {
         const { courseTitle, category } = req.body;
@@ -106,7 +106,7 @@ const getCourseById = async (req, res) => {
         const { courseId } = req.params;
 
         const course = await Course.findById(courseId)
-      .populate("lectures", "lectureTitle videoUrl") // Populate lecture fields
+      .populate("lectures", "lectureTitle videoUrl _id ") // Populate lecture fields
       .populate("creator", "name photoUrl") // Populate creator's name and email
       .exec();
 console.log("course",course);
